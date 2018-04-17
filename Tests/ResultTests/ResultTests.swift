@@ -2,11 +2,11 @@
 
 final class ResultTests: XCTestCase {
 	func testMapTransformsSuccesses() {
-		XCTAssertEqual(success.map { $0.characters.count } ?? 0, 7)
+		XCTAssertEqual(success.map { $0.count } ?? 0, 7)
 	}
 
 	func testMapRewrapsFailures() {
-		XCTAssertEqual(failure.map { $0.characters.count } ?? 0, 0)
+		XCTAssertEqual(failure.map { $0.count } ?? 0, 0)
 	}
 
 	func testInitOptionalSuccess() {
@@ -37,7 +37,7 @@ final class ResultTests: XCTestCase {
 
 	func testBimapTransformsSuccesses() {
 		XCTAssertEqual(success.bimap(
-			success: { $0.characters.count },
+			success: { $0.count },
 			failure: { $0 }
 		) ?? 0, 7)
 	}
@@ -179,36 +179,6 @@ final class ResultTests: XCTestCase {
 		XCTAssertEqual(left.recover(with: right).error, .right)
 	}
 
-	// MARK: Cocoa API idioms
-
-	#if !os(Linux)
-
-	func testTryProducesFailuresForBooleanAPIWithErrorReturnedByReference() {
-		let result = `try` { attempt(true, succeed: false, error: $0) }
-		XCTAssertFalse(result ?? false)
-		XCTAssertNotNil(result.error)
-	}
-
-	func testTryProducesFailuresForOptionalWithErrorReturnedByReference() {
-		let result = `try` { attempt(1, succeed: false, error: $0) }
-		XCTAssertEqual(result ?? 0, 0)
-		XCTAssertNotNil(result.error)
-	}
-
-	func testTryProducesSuccessesForBooleanAPI() {
-		let result = `try` { attempt(true, succeed: true, error: $0) }
-		XCTAssertTrue(result ?? false)
-		XCTAssertNil(result.error)
-	}
-
-	func testTryProducesSuccessesForOptionalAPI() {
-		let result = `try` { attempt(1, succeed: true, error: $0) }
-		XCTAssertEqual(result ?? 0, 1)
-		XCTAssertNil(result.error)
-	}
-
-	#endif
-
 	func testTryMapProducesSuccess() {
 		let result = success.tryMap(tryIsSuccess)
 		XCTAssert(result == success)
@@ -259,19 +229,6 @@ extension AnyError: Equatable {
 	}
 }
 
-#if !os(Linux)
-
-func attempt<T>(_ value: T, succeed: Bool, error: NSErrorPointer) -> T? {
-	if succeed {
-		return value
-	} else {
-		error?.pointee = Result<(), NSError>.error()
-		return nil
-	}
-}
-
-#endif
-
 func tryIsSuccess(_ text: String?) throws -> String {
 	guard let text = text, text == "success" else {
 		throw error
@@ -293,48 +250,6 @@ extension NSError {
 		return userInfo[Result<(), NSError>.lineKey] as? Int
 	}
 }
-
-#if os(Linux)
-
-extension ResultTests {
-	static var allTests: [(String, (ResultTests) -> () throws -> Void)] {
-		return [
-			("testMapTransformsSuccesses", testMapTransformsSuccesses),
-			("testMapRewrapsFailures", testMapRewrapsFailures),
-			("testInitOptionalSuccess", testInitOptionalSuccess),
-			("testInitOptionalFailure", testInitOptionalFailure),
-			("testFanout", testFanout),
-			("testBimapTransformsSuccesses", testBimapTransformsSuccesses),
-			("testBimapTransformsFailures", testBimapTransformsFailures),
-			("testErrorsIncludeTheSourceFile", testErrorsIncludeTheSourceFile),
-			("testErrorsIncludeTheSourceLine", testErrorsIncludeTheSourceLine),
-			("testErrorsIncludeTheCallingFunction", testErrorsIncludeTheCallingFunction),
-			("testTryCatchProducesSuccesses", testTryCatchProducesSuccesses),
-			("testTryCatchProducesFailures", testTryCatchProducesFailures),
-			("testTryCatchWithFunctionProducesSuccesses", testTryCatchWithFunctionProducesSuccesses),
-			("testTryCatchWithFunctionCatchProducesFailures", testTryCatchWithFunctionCatchProducesFailures),
-			("testMaterializeProducesSuccesses", testMaterializeProducesSuccesses),
-			("testMaterializeProducesFailures", testMaterializeProducesFailures),
-			("testRecoverProducesLeftForLeftSuccess", testRecoverProducesLeftForLeftSuccess),
-			("testRecoverProducesRightForLeftFailure", testRecoverProducesRightForLeftFailure),
-			("testRecoverWithProducesLeftForLeftSuccess", testRecoverWithProducesLeftForLeftSuccess),
-			("testRecoverWithProducesRightSuccessForLeftFailureAndRightSuccess", testRecoverWithProducesRightSuccessForLeftFailureAndRightSuccess),
-			("testRecoverWithProducesRightFailureForLeftFailureAndRightFailure", testRecoverWithProducesRightFailureForLeftFailureAndRightFailure),
-//			("testTryProducesFailuresForBooleanAPIWithErrorReturnedByReference", testTryProducesFailuresForBooleanAPIWithErrorReturnedByReference),
-//			("testTryProducesFailuresForOptionalWithErrorReturnedByReference", testTryProducesFailuresForOptionalWithErrorReturnedByReference),
-//			("testTryProducesSuccessesForBooleanAPI", testTryProducesSuccessesForBooleanAPI),
-//			("testTryProducesSuccessesForOptionalAPI", testTryProducesSuccessesForOptionalAPI),
-			("testTryMapProducesSuccess", testTryMapProducesSuccess),
-			("testTryMapProducesFailure", testTryMapProducesFailure),
-			("testAnyErrorDelegatesLocalizedDescriptionToUnderlyingError", testAnyErrorDelegatesLocalizedDescriptionToUnderlyingError),
-			("testAnyErrorDelegatesLocalizedFailureReasonToUnderlyingError", testAnyErrorDelegatesLocalizedFailureReasonToUnderlyingError),
-			("testAnyErrorDelegatesLocalizedRecoverySuggestionToUnderlyingError", testAnyErrorDelegatesLocalizedRecoverySuggestionToUnderlyingError),
-			("testAnyErrorDelegatesLocalizedHelpAnchorToUnderlyingError", testAnyErrorDelegatesLocalizedHelpAnchorToUnderlyingError),
-		]
-	}
-}
-
-#endif
 
 import Foundation
 import Result
