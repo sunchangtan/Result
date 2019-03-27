@@ -379,7 +379,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 0700;
-				LastUpgradeCheck = 0930;
+				LastUpgradeCheck = 1020;
 				ORGANIZATIONNAME = "Rob Rix";
 				TargetAttributes = {
 					57FCDE3C1BA280DC00130C48 = {
@@ -401,7 +401,7 @@
 					};
 					D454807C1A957361009D7229 = {
 						CreatedOnToolsVersion = 6.3;
-						LastSwiftMigration = 1000;
+						LastSwiftMigration = 1020;
 					};
 					D45480861A957362009D7229 = {
 						CreatedOnToolsVersion = 6.3;
@@ -411,10 +411,11 @@
 			};
 			buildConfigurationList = D45480511A9572F5009D7229 /* Build configuration list for PBXProject "Result" */;
 			compatibilityVersion = "Xcode 3.2";
-			developmentRegion = English;
+			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
+				Base,
 			);
 			mainGroup = D454804D1A9572F5009D7229;
 			productRefGroup = D45480581A9572F5009D7229 /* Products */;
@@ -924,7 +925,7 @@
 				PRODUCT_NAME = Result;
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
-				SWIFT_VERSION = 4.2;
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -949,7 +950,7 @@
 				PRODUCT_NAME = Result;
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
-				SWIFT_VERSION = 4.2;
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
 			};
